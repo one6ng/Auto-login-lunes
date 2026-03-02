@@ -1,9 +1,8 @@
 ## Netlib 自动登录保活脚本
 这是一个用于自动登录 Netlib 网站以保持账户活跃的脚本，配合 GitHub Actions 实现自动定时执行。
 
-注册地址：https://www.netlib.re
+Pterodactyl面板地址：https://ctrl.lunes.host/
 
-视频教程地址：https://youtu.be/7laVmEfgC9o
 
 
 ### 功能特点
