@@ -1,8 +1,8 @@
-name: Lunes Auto Login
+name: Lunes Node Login KeepAlive Ultimate
 
 on:
   schedule:
-    - cron: "0 1 */10 * *"
+    - cron: "0 2 */10 * *"
   workflow_dispatch:
 
 jobs:
@@ -13,20 +13,43 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Restore Cookies
+        uses: actions/download-artifact@v4
+        with:
+          name: cookies
+          path: cookies
+        continue-on-error: true
 
       - name: Run Login Script
         run: node login.js
         env:
-          LUNES_USERNAME: ${{ secrets.LUNES_USERNAME }}
-          LUNES_PASSWORD: ${{ secrets.LUNES_PASSWORD }}
+          ACCOUNTS: ${{ secrets.ACCOUNTS }}
           SERVER_ID: ${{ secrets.SERVER_ID }}
           SERVER_UUID: ${{ secrets.SERVER_UUID }}
           NODE_HOST: ${{ secrets.NODE_HOST }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          ONLY_ERROR_NOTIFY: ${{ secrets.ONLY_ERROR_NOTIFY }}
+
+      - name: Upload Cookies
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cookies
+          path: cookies/
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots/
